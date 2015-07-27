@@ -1,0 +1,133 @@
+---
+title: "Is there a Relationship between Job Satisfaction and Job Security?"
+date: "April 20, 2015"
+output:
+  html_document:
+    theme: cerulean
+---
+
+
+```{r setup, echo=FALSE , include=FALSE, fig.width=7, fig.height=6}
+knitr::opts_chunk$set(cache=TRUE)
+options(width=120)
+load(file = "statistics-project-gss.Rdata")
+jobsData <- gss[ gss$joblose!="Leaving Labor Force" , c("year", "age", "sex" , "joblose" , "jobfind" , "satjob" )]
+```
+
+```{r}
+
+```
+
+### Introduction
+This paper explores the relationship between <B>Job Satisfaction and Job Security</B>.
+
+It is important to analyze this relationship since jobs are important for the economy and how one views works often affects the person's wellbeing and overall economy. It has personal as well as wider implications on the society.
+
+This research paper explores whether there is a relationship between job satisfaction and security - of whether they are independent of each other.
+
+### Data
+[The following paragraph is excerpted from the <a href="http://www.norc.org/Research/Projects/Pages/general-social-survey.aspx">General Social Survey Project Description</a>]
+
+<P style="border-style:solid; border-color:blue;padding:.1cm .1cm .1cm .1cm;border-width: 1px;">
+Since 1972, the General Social Survey (GSS) has been monitoring societal change and studying the growing complexity of American society. The GSS aims to gather data on contemporary American society in order to monitor and explain trends and constants in attitudes, behaviors, and attributes; to examine the structure and functioning of society in general as well as the role played by relevant subgroups; to compare the United States to other societies in order to place American society in comparative perspective and develop cross-national models of human society; and to make high-quality data easily accessible to scholars, students, policy makers, and others, with minimal cost and waiting.
+</p>
+
+The data was collected by computer-assisted personal interviews (CAPI), face-to-face interviews and telephone interviews.
+
+The dataset is composed by 57061 cases corresponding to an equal number of interviewed citizens. Each person may be considered as a single case, as there are several pieces of information (variables) which were recorded for each case. In particular, cases are single individuals respecting the following characteristics: all non institutionalized, English and Spanish speaking persons 18 years of age or older, living in the United States. As just mentioned each candidate was asked several questions about a number of aspects of his own life, his family, his community, the society he lives in.
+
+
+GSS questions cover a diverse range of issues including national spending priorities, marijuana use, crime and punishment, race relations, quality of life, confidence in institutions, and sexual behavior.
+
+The unit of observation is an <B>individual respondent</B>.
+
+The data variables that will be used for this research are <code>satjob</code> and <code>joblose</code>. Both are <B>categorical</b> variables which are <B>ordinal</B> in nature.
+
+The variable <code>satjob</code> records the level of satisfaction a respondent has towards his or her work. This variable has five levels which are very satisfied, moderately satisfied, a little dissatisfied, very dissatisfied and not applicable (NA).
+
+The variable <code>joblose</code> records whether the respondent feels he is likely to lose his or her job. This variable has six levels which are very likely, fairly likely, not too likely, leaving labor force and not applicable (NA).
+
+Since the response 'leaving labor force' is not important in the overall scheme of this study, the data has been subsetted to remove repondents who are leaving the workforce. Therefore the number of levels are effectively 5 for this variable.
+
+
+This is an observational study on English and Spanish speaking persons 18 years or older residing in the USA.
+
+The study is observational because researchers recorded data “in a way that does not directly interfere with how the data arise”. The structure of the survey and the data collection methods are clearly not typical of an experimental setup. In the latter case, in fact, researchers would have sampled individuals and divided them into groups organizing an experiment in order to investigate the possibility of a causal connection between two or more variables. From the point of view of the generalizability of the study it is crucial to focus on the population of interest, which in this very case, includes all non institutionalized, English and Spanish speaking persons 18 years of age or older, living in the United States. According to 2011 American Community Survey Data on Language Use 79.2205% of american families speak English at home, while the 20.7794% speak Spanish which added up result in a global 99.9999%. 
+
+This means that we can reasonably generalize the results to the totality of US population 18 years of age or older. Furthermore the used data collection methods compensate each other in terms of any potential source of sampling bias. For instance, CAPI is mainly addressed to computer friendly persons. This bias may be prevented by phone interviews which enable researchers to reach and convince less technology-friendly people. The last but not the least is the face-to-face survey which compensates the unavoidable bias introduced by a phone call. The latter gives for granted the connection to a phone line which may not always be respected. In addition to that it is necessary to consider that generally children, youngsters or more generally minors do not have a clear financial overview over the family. Despite their belonging to a particular religious community they may have great insights into the total family income, which means that their contribution to the survey, at least on this very aspect, would have been pointless. All this considerations lead us to the conclusion that the results of the study may be generalized to all US families. 
+
+However, since the survey is observational, the findings do not imply causal relationships.
+
+Since the  data collection methods compensate each other and owing to the large sample size across different age groups, these considerations lead us to the conclusion that the results of the study may be generalized to all US families. 
+
+There are sources of bias.Confounding variables could be: educ (level of education),paeduc (HIGHEST YEAR SCHOOL COMPLETED, FATHER),maeduc (HIGHEST YEAR SCHOOL COMPLETED, MOTHER), degree RS HIGHEST DEGREE), race (RACE OF RESPONDENT), sex (RESPONDENTS SEX), unemp (EVER UNEMPLOYED IN LAST TEN YRS); - Convenience sample - Non-response - Voluntary response. 
+
+
+Since this is an observational study, causal links cannot be established between the variables of interest since there may be confounding factors which contribute to a correlation observed. However, correlations or the lack of it, can be studied as a part of this research and documented.
+
+
+It only establishes an association and it uses past data. The observational study is not causal, but generalizable because there was no random assignment but the sampling was random. 
+
+### Exploratory data analysis
+The following plots the relationship between Job Satisfaction and Job Security (the likelyhood of the respondent losing his or her job) which is followed by the table of data.
+```{r }
+plot( jobsData$joblose~jobsData$satjob)
+generalTable <- addmargins( table(  jobsData$joblose,jobsData$satjob) )[-5,]
+generalTable
+```
+
+This suggests that `r generalTable["Not Likely", "Very Satisfied"]` respondents  were very satisfied with their work and is not likely to lose their job - which is about `r paste0( round( generalTable["Not Likely", "Very Satisfied"] / generalTable["Sum", "Sum"] *100 , 2 ) , '%' )` of the population.
+
+Since it is not easy to conclude any relationship from the current exploratory analysis, we will perform statistical inference on the data to judge the likelyhood of a relationship
+
+
+
+
+
+### Inference
+It is necessary to perform a rigorous statistic test on the dataset. First a purpose of clearness, first of all we recap the main target of the project which is to answer the following question: “Is there a relationship between job satisfaction and job security?”
+
+As we are dealing with two categorical variables (Job Satisfaction and Job Losing Likelyhood), both of which with more than two levels (5 each), only an hypothesis test is admittable. In particular, as no defined parameter of interest can be highlighted, I have performed a theroretical Chi-square test for independence, which is allowed by the fact that each particular scenario (i.e. cell count) has at least 5 expected cases. The proof of this condition being met is provided in the following table, which summarizes the whole dataset with each case joined by its expected value. As you can see all scenarios have expected value well above 5.
+
+
+The total number of degrees of freedom is <code> df = (R − 1) × (C − 1) </code> which is equal to <code> df = (5 − 1) × (5 − 1) = 16 </code>, well above the minimum allowed of 2.
+
+As for the independence issue, the GSS sampling has been randomic and in any case the number of cases in each scenario as well as the total amount of cases is below the 10% of the population of the US.
+
+
+Let us state the <B> Hypothesis </b>
+
+* Null Hypothesis - H~0~ : (nothing going on): Job Satisfaction and Security are independent - meaning that job security does not vary depending on job satisfaction.
+* Alternate Hypothesis - H~A~ : Job Satisfaction and Security are dependent - meaning that job security does vary depending on job satisfaction.
+
+Chi-square Test can be performed on the table summary derived before:
+
+```{r}
+chisq.test(generalTable)
+```
+
+Because the p-value is close to zero we can reject the Null Hypothese (H~0~) in favor of the alternate Hypothesis (H~A~) which states that there is a relationship between job satisfaction and security.
+
+
+### Conclusion
+
+The aim of the research project was to investigate whether there could be any association between the job satisfaction and security. The dataset was taken from the General Social Survey 1972-2012 (GSS), which since 1972 has been monitoring societal change and studying the growing complexity of American society. The original database was subset in order to take into account only the two variables of interest, Job Satisfaction and Job Lose (Likelyhood of losing the job). 
+
+The result of the statistical analysis leads us to reject the null hypothesis and then to state that there is a relationship between job satisfaction and job security.
+
+This could be only the beginning of a wider study about correlation between job satisfaction and security. Deeper insights must be get into the matter and more complex statistical tools and techniques must be used in order to infer complete and satisfying conclusions.
+
+
+### References - Data Citation
+Smith, Tom W., Michael Hout, and Peter V. Marsden. General Social Survey, 1972-2012 [Cumulative File]. ICPSR34802-v1. Storrs, CT: Roper Center for Public Opinion Research, University of Connecticut/Ann Arbor, MI: Inter-university Consortium for Political and Social Research [distributors], 2013-09-11. http://doi.org/10.3886/ICPSR34802.v1
+
+
+<B>General Social Survey Cumulative File, 1972-2012 Coursera Extract - modified for DASI.</B>
+Persistent URL: http://doi.org/10.3886/ICPSR34802.v1
+
+
+### Appendix 1: Attached Data Set
+```{r }
+tail( jobsData[,c(4,6)], 50)
+```
+
